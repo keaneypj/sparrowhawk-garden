@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparrowhawk — Oak Harbor Garden Tour</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='90' fill='none' stroke='%23B8932E' stroke-width='8'/%3E%3Cg fill='%232F3826'%3E%3Cpath d='M100,74 C109,82 110,116 104,150 L96,150 C90,116 91,82 100,74 Z'/%3E%3Ccircle cx='99' cy='64' r='10'/%3E%3Cpath d='M90,61 L79,65 L90,69 Z'/%3E%3Cpath d='M93,148 L87,180 L94,174 L100,182 L106,174 L113,180 L107,148 Z'/%3E%3Cpath d='M100,82 C130,72 158,66 184,58 L172,72 L176,74 L160,84 L164,86 L146,96 C130,100 114,104 103,108 C103,100 101,90 100,82 Z'/%3E%3Cpath transform='translate(200,0) scale(-1,1)' d='M100,82 C130,72 158,66 184,58 L172,72 L176,74 L160,84 L164,86 L146,96 C130,100 114,104 103,108 C103,100 101,90 100,82 Z'/%3E%3C/g%3E%3C/svg%3E">
+
+<!-- Fonts load from the web when online; if you're offline at the tour,
+     the page falls back to clean built-in fonts automatically. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* ---- Palette: drawn from the garden itself ---- */
+    --stone:      #E7E8DF;  /* sun-bleached limestone ground */
+    --plaster:    #F4F3EB;  /* warm pale card surface */
+    --olive-ink:  #2F3826;  /* deep foliage shadow — main text */
+    --olive-soft: #6B6F5E;  /* muted text */
+    --sage:       #9AA888;  /* mid foliage */
+    --sage-pale:  #C9CFB9;  /* soft foliage line */
+    --lavender:   #7A6E96;  /* dusty lavender flower */
+    --gold:       #B8932E;  /* santolina / phlomis gold */
+    --line:       #D5D7C8;  /* hairline */
+
+    --maxw: 1120px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--stone);
+    color:var(--olive-ink);
+    font-family:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* soft Mediterranean light pooled at the top of the page */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:radial-gradient(120% 60% at 70% -10%, rgba(255,250,235,.55), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{ position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+
+  /* ---------- HERO ---------- */
+  header.hero{ padding:34px 0 56px; }
+
+  .eyebrow{
+    font-size:.78rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  .hero h1{
+    font-family:"Fraunces", Georgia, "Times New Roman", serif;
+    font-weight:500;
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:1.02;
+    letter-spacing:-.01em;
+    margin:.28em 0 .35em;
+  }
+  .hero h1 em{ font-style:italic; color:var(--lavender); font-weight:400; }
+
+  .hero .tagline{
+    font-family:"Fraunces", Georgia, serif;
+    font-size:clamp(1.2rem, 2.6vw, 1.7rem);
+    font-weight:400; color:var(--olive-ink);
+    margin-bottom:.7em;
+  }
+  .hero .tagline em{ font-style:italic; color:var(--lavender); }
+
+  .hero .lede{
+    font-size:clamp(1.05rem, 2vw, 1.25rem);
+    color:var(--olive-soft);
+    max-width:46ch;
+  }
+
+  .hero .meta{
+    margin-top:34px; padding-top:22px;
+    border-top:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:28px 44px; align-items:baseline;
+  }
+  .meta .item .k{ font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--olive-soft); }
+  .meta .item .v{ font-family:"Fraunces", Georgia, serif; font-size:1.35rem; }
+
+  /* photo hero */
+  .hero-media{ position:relative; width:100%; min-height:clamp(360px,58vh,560px);
+    border-radius:6px; overflow:hidden; margin-bottom:32px;
+    background:linear-gradient(150deg,#6f7a5c,#3a4632); }
+  .hero-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .hero-scrim{ position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(24,32,28,.74), rgba(24,32,28,.22) 52%, rgba(24,32,28,0) 80%); }
+  .hero-text{ position:absolute; left:0; right:0; bottom:0; padding:clamp(22px,4vw,46px); }
+  .hero-text .eyebrow{ color:#A8D6C7; font-size:clamp(.95rem,1.7vw,1.18rem); letter-spacing:.18em; }
+  .hero-text h1{ color:#FBFAF5; margin:.14em 0 .12em; text-shadow:0 2px 22px rgba(0,0,0,.36); }
+  .hero-text .tagline{ color:#ECEAE0; margin-bottom:0; }
+  .hero-text .tagline em{ color:#A8D6C7; }
+
+  /* ---------- INDEX / PLANT GRID ---------- */
+  main{ padding-bottom:80px; }
+
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:16px; margin:18px 0 30px; flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-family:"Fraunces", Georgia, serif; font-weight:500; font-size:1.5rem;
+  }
+  .section-head .count{ font-size:.85rem; color:var(--olive-soft); letter-spacing:.04em; }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:28px;
+  }
+
+  .card{
+    background:var(--plaster);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    /* scroll reveal */
+    opacity:0; transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease, box-shadow .35s ease, border-color .35s ease;
+  }
+  .card.in{ opacity:1; transform:none; }
+  .card:hover{ box-shadow:0 14px 34px -18px rgba(47,56,38,.4); border-color:var(--sage-pale); }
+
+  /* photo area + graceful fallback before photos are added */
+  .photo{
+    position:relative;
+    aspect-ratio:4/3;
+    background:var(--sage-pale);
+    overflow:hidden;
+  }
+  .photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .6s ease;
+  }
+  .card:hover .photo img{ transform:scale(1.04); }
+
+  .photo .placeholder{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px;
+    background:
+      linear-gradient(160deg, var(--sage) 0%, #8b9a79 100%);
+    color:rgba(255,255,255,.92);
+    text-align:center; padding:16px;
+  }
+  .photo .placeholder .mono{
+    font-family:"Fraunces", Georgia, serif; font-style:italic;
+    font-size:2.4rem; line-height:1;
+  }
+  .photo .placeholder .hint{
+    font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+    opacity:.82;
+  }
+  /* swatch tab — flower colour of each plant */
+  .photo .swatch{
+    position:absolute; top:0; left:18px;
+    width:34px; height:10px; border-radius:0 0 3px 3px;
+  }
+
+  .card-body{ padding:20px 20px 22px; display:flex; flex-direction:column; flex:1; }
+  .card-body .common{
+    font-size:.74rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--olive-soft); margin-bottom:4px;
+  }
+  .card-body .latin{
+    font-family:"Fraunces", Georgia, serif; font-style:italic; font-weight:400;
+    font-size:1.55rem; line-height:1.12; color:var(--olive-ink);
+    margin-bottom:12px;
+  }
+  .card-body .blurb{ font-size:.95rem; color:#454c3b; }
+
+  .tags{
+    display:flex; flex-wrap:wrap; gap:7px;
+    margin-top:16px; padding-top:15px; border-top:1px solid var(--line);
+  }
+  .tag{
+    font-size:.7rem; letter-spacing:.04em;
+    padding:4px 9px; border-radius:999px;
+    background:rgba(154,168,136,.18); color:#4c5440;
+    white-space:nowrap;
+  }
+  .tag.gold{ background:rgba(184,147,46,.16); color:#7a6314; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:42px 0 64px;
+    color:var(--olive-soft); font-size:.9rem;
+  }
+  footer .fr{ font-family:"Fraunces", Georgia, serif; font-style:italic; font-size:1.1rem; color:var(--olive-ink); }
+
+  /* ---------- TOP NAV / TABS ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:5;
+    background:rgba(231,232,223,.9);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav .bar{
+    max-width:var(--maxw); margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:14px 24px; flex-wrap:wrap;
+  }
+  .brand{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:"Fraunces", Georgia, serif; font-size:1.2rem;
+    color:var(--olive-ink); text-decoration:none; white-space:nowrap;
+  }
+  .brand-mark{ width:30px; height:30px; display:block; flex:none; }
+  .brand .dot{ color:var(--gold); }
+  .hero-logo{ width:78px; height:78px; display:block; margin-bottom:20px; }
+  .tabs{ display:flex; flex-wrap:wrap; gap:6px 22px; }
+  .tab-btn{
+    appearance:none; border:none; background:none; cursor:pointer;
+    font-family:inherit; font-size:.95rem; font-weight:600;
+    letter-spacing:.09em; text-transform:uppercase; color:var(--olive-soft);
+    padding:8px 2px; position:relative;
+  }
+  .tab-btn + .tab-btn{ margin-left:0; }
+  .tab-btn::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+    background:var(--gold); transform:scaleX(0); transform-origin:left;
+    transition:transform .3s ease;
+  }
+  .tab-btn:hover{ color:var(--olive-ink); }
+  .tab-btn.active{ color:var(--olive-ink); }
+  .tab-btn.active::after{ transform:scaleX(1); }
+
+  .view[hidden]{ display:none; }
+
+  /* ---------- ARCHITECTS (tribute tab) ---------- */
+  .ack-intro{ padding:72px 0 8px; max-width:60ch; }
+  .ack-intro h2{
+    font-family:"Fraunces", Georgia, serif; font-weight:500;
+    font-size:clamp(2rem,5vw,3.2rem); line-height:1.05; margin:.22em 0 .45em;
+  }
+  .ack-intro p{ color:var(--olive-soft); font-size:1.08rem; }
+  .ack-intro em{ font-style:italic; color:var(--lavender); }
+
+  .architect{ padding:40px 0; border-top:1px solid var(--line); overflow:hidden; }
+  .architect:first-of-type{ margin-top:28px; }
+  .architect .role{
+    font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold);
+  }
+  .architect.lav .role{ color:var(--lavender); }
+  .architect h3{
+    font-family:"Fraunces", Georgia, serif; font-weight:500; font-style:italic;
+    font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.05; margin:.14em 0 0;
+  }
+  .architect .lead-rule{ height:3px; width:46px; background:var(--gold); margin:16px 0 20px; }
+  .architect.lav .lead-rule{ background:var(--lavender); }
+  .architect .sub{
+    font-size:.76rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--olive-soft); margin:20px 0 7px;
+  }
+  .architect p{ max-width:64ch; margin-bottom:8px; color:#454c3b; }
+  .architect blockquote{
+    font-family:"Fraunces", Georgia, serif; font-style:italic; font-size:1.35rem;
+    line-height:1.35; color:var(--olive-ink); max-width:50ch;
+    margin:22px 0 4px; padding-left:18px; border-left:2px solid var(--sage);
+  }
+  .architect blockquote cite{
+    display:block; font-style:normal; font-family:"Hanken Grotesk", sans-serif;
+    font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--olive-soft); margin-top:10px;
+  }
+  .architect .works{ font-size:.92rem; color:var(--olive-soft); margin-top:18px; max-width:64ch; }
+  .architect a{ color:var(--lavender); text-underline-offset:3px; }
+
+  /* ---------- KASSIOPIA (essay tab) ---------- */
+  .essay{ padding:6px 0 12px; max-width:66ch; }
+  .essay h3{
+    font-family:"Fraunces", Georgia, serif; font-weight:500;
+    font-size:clamp(1.35rem,3vw,1.8rem); line-height:1.15;
+    color:var(--olive-ink); margin:36px 0 10px;
+  }
+  .essay p{ margin-bottom:14px; color:#454c3b; }
+  .essay p.first{ font-size:1.08rem; }
+  .essay .palette-note{
+    border-left:2px solid var(--gold); padding:4px 0 4px 18px; margin:24px 0;
+    font-family:"Fraunces", Georgia, serif; font-style:italic; font-size:1.22rem;
+    line-height:1.4; color:var(--olive-ink); max-width:54ch;
+  }
+  .essay .works{ font-size:.94rem; color:var(--olive-soft); margin-top:28px; }
+  .essay a{ color:var(--lavender); text-underline-offset:3px; }
+
+  /* ---------- PHOTO GALLERIES (construction tab) ---------- */
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+    gap:24px; margin:26px 0 8px;
+  }
+  /* ---------- THE STORY (sectioned tab) ---------- */
+  .story-nav{ position:sticky; top:58px; z-index:4;
+    display:flex; flex-wrap:wrap; gap:4px 24px;
+    padding:14px 0; margin-bottom:6px;
+    background:rgba(231,232,223,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); }
+  .story-tab{ appearance:none; border:none; background:none; cursor:pointer;
+    font-family:inherit; font-size:.92rem; font-weight:600; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--olive-soft); padding:6px 2px; position:relative; }
+  .story-tab::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+    background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .3s ease; }
+  .story-tab:hover{ color:var(--olive-ink); }
+  .story-tab.active{ color:var(--olive-ink); }
+  .story-tab.active::after{ transform:scaleX(1); }
+  .story-section{ display:none; }
+  .story-section.active{ display:block; }
+  .shot{ display:flex; flex-direction:column; }
+  .shot .frame{
+    position:relative; aspect-ratio:3/2; border-radius:4px; overflow:hidden;
+    background:var(--sage-pale); border:1px solid var(--line);
+  }
+  .shot .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .shot .frame .ph{
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center; gap:9px;
+    background:linear-gradient(160deg, var(--sage), #8b9a79);
+    color:rgba(255,255,255,.92); text-align:center; padding:14px;
+  }
+  .shot .frame .ph svg{ width:26px; height:26px; opacity:.9; }
+  .shot .frame .ph .fn{ font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; opacity:.85; }
+  .shot figcaption{ font-size:.85rem; color:var(--olive-soft); margin-top:9px; line-height:1.4; }
+
+  /* ---------- WORLD MAP (climate tab) ---------- */
+  .worldmap{ margin:26px 0 14px; }
+  .worldmap .wm-svg{ width:100%; height:auto; display:block; }
+  .worldmap figcaption{ font-size:.84rem; color:var(--olive-soft); margin-top:11px; max-width:64ch; }
+  .zone-legend{ list-style:none; margin:16px 0 6px; padding:0;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:9px 24px; }
+  .zone-legend li{ display:flex; align-items:baseline; gap:11px; font-size:.95rem; color:#454c3b; }
+  .zone-legend .num{ flex:none; width:22px; height:22px; border-radius:50%;
+    background:#B8932E; color:#fff; font-size:.76rem; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center; transform:translateY(3px); }
+  .zone-legend .star{ flex:none; width:22px; text-align:center; color:var(--olive-ink); font-size:1rem; }
+
+  /* ---------- CLIMATE COMPARISON TABLE ---------- */
+  .table-wrap{ overflow-x:auto; margin:22px 0 8px; -webkit-overflow-scrolling:touch; }
+  .climate-table{ border-collapse:collapse; width:100%; min-width:640px; font-size:.92rem; }
+  .climate-table th, .climate-table td{
+    text-align:left; padding:13px 15px; border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  .climate-table thead th{
+    font-family:"Fraunces", Georgia, serif; font-weight:500; font-size:1.05rem;
+    color:var(--olive-ink); border-bottom:2px solid var(--sage); line-height:1.15;
+  }
+  .climate-table thead th span{
+    display:block; font-family:"Hanken Grotesk", sans-serif; font-weight:500;
+    font-size:.66rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--olive-soft); margin-top:4px;
+  }
+  .climate-table tbody th{
+    font-family:"Hanken Grotesk", sans-serif; font-weight:600; font-size:.7rem;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--olive-soft); white-space:nowrap;
+  }
+  .climate-table td{ color:#454c3b; }
+  .climate-table .me{ background:rgba(184,147,46,.10); }
+  .climate-table thead th.me{ color:var(--gold); }
+
+  /* ---------- PORTRAITS (architect photos) ---------- */
+  .portrait{ float:right; width:208px; margin:2px 0 14px 28px; }
+  .portrait .frame{
+    position:relative; aspect-ratio:4/5; border-radius:4px; overflow:hidden;
+    background:var(--sage-pale); border:1px solid var(--line);
+  }
+  .portrait .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .portrait .frame .ph{
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(160deg, var(--sage), #8b9a79);
+    color:rgba(255,255,255,.92); text-align:center; padding:14px;
+  }
+  .portrait .frame .ph svg{ width:24px; height:24px; opacity:.9; }
+  .portrait .frame .ph .fn{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; opacity:.85; }
+  .portrait figcaption{ font-size:.8rem; color:var(--olive-soft); margin-top:8px; text-align:center; }
+  @media (max-width:640px){ .portrait{ float:none; width:100%; max-width:260px; margin:0 0 18px; } }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:640px){
+    header.hero{ padding:24px 0 40px; }
+    .grid{ grid-template-columns:1fr; gap:22px; }
+    .hero .meta{ gap:20px 32px; }
+  }
+
+  /* accessibility */
+  a:focus-visible, .card:focus-visible{ outline:2px solid var(--lavender); outline-offset:3px; }
+  @media (prefers-reduced-motion:reduce){
+    *{ scroll-behavior:auto !important; }
+    .card{ opacity:1 !important; transform:none !important; transition:none; }
+    .card:hover .photo img{ transform:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- reusable Sparrowhawk mark -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="mark" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#B8932E" stroke-width="5"/>
+      <g fill="#2F3826">
+        <path d="M100,74 C109,82 110,116 104,150 L96,150 C90,116 91,82 100,74 Z"/>
+        <circle cx="99" cy="64" r="10"/>
+        <path d="M90,61 L79,65 L90,69 Z"/>
+        <path d="M93,148 L87,180 L94,174 L100,182 L106,174 L113,180 L107,148 Z"/>
+        <path d="M100,82 C130,72 158,66 184,58 L172,72 L176,74 L160,84 L164,86 L146,96 C130,100 114,104 103,108 C103,100 101,90 100,82 Z"/>
+        <path transform="translate(200,0) scale(-1,1)" d="M100,82 C130,72 158,66 184,58 L172,72 L176,74 L160,84 L164,86 L146,96 C130,100 114,104 103,108 C103,100 101,90 100,82 Z"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <nav class="topnav">
+    <div class="bar">
+      <a class="brand" href="#" id="brandLink">
+        <svg class="brand-mark" aria-hidden="true"><use href="#mark"/></svg>
+        <span>Sparrowhawk<span class="dot">.</span></span>
+      </a>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-view="garden">The Garden</button>
+        <button class="tab-btn" data-view="story">The Story</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <!-- ============================================================
+         VIEW 1 · THE GARDEN  (home + plant index)
+         ============================================================ -->
+    <div id="view-garden" class="view">
+
+    <!-- ============================================================
+         HERO  —  edit the garden name, intro, and tour details here
+         ============================================================ -->
+    <header class="hero">
+      <div class="hero-media">
+        <img class="hero-img" src="hero.jpg" data-base="hero" data-i="0" alt="Sparrowhawk garden overlooking Saratoga Passage" onerror="heroImg(this)">
+        <div class="hero-scrim"></div>
+        <div class="hero-text">
+          <p class="eyebrow">Oak Harbor Garden Tour · June 27, 2026</p>
+          <h1>Sparrowhawk</h1>
+          <p class="tagline">A Mediterranean garden of <em>silver, sun &amp; scent</em></p>
+        </div>
+      </div>
+      <p class="lede">A dry garden built around lavenders and their sun-loving companions — herbs and silver-leaved shrubs that ask for little more than heat, light, and good drainage, and give back fragrance all summer long.</p>
+
+      <div class="meta">
+        <div class="item"><div class="k">Plants on tour</div><div class="v" id="plantCount">—</div></div>
+        <div class="item"><div class="k">Style</div><div class="v">Mediterranean</div></div>
+        <div class="item"><div class="k">Conditions</div><div class="v">Full sun, low water</div></div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         PLANT INDEX  —  the cards below are generated from the
+         PLANTS list in the script at the bottom of this file.
+         To edit text or add a plant, scroll down to that list.
+         ============================================================ -->
+    <main>
+      <div class="section-head">
+        <h2>The Plants</h2>
+        <span class="count">Tap a name to learn more · listed as you'll meet them in the beds</span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </main>
+    </div><!-- /view-garden -->
+        <!-- ============================================================
+         VIEW 2 · THE STORY  (origins, climate, inspiration & people)
+         To edit, find the section below by its heading.
+         ============================================================ -->
+    <div id="view-story" class="view" hidden>
+      <nav class="story-nav">
+        <button class="story-tab active" data-section="origins">Origins</button>
+        <button class="story-tab" data-section="climate">Climate</button>
+        <button class="story-tab" data-section="kassiopia">Kassiopia</button>
+        <button class="story-tab" data-section="people">The People</button>
+      </nav>
+      <section id="story-origins" class="story-section active">
+      <section class="ack-intro">
+        <p class="eyebrow">Origins · 2021</p>
+        <h2>From bare ground</h2>
+        <p>When we began in 2021, there was no garden here at all — only bare ground, the scattered remnants of construction, and a stubborn underground web of blackberry roots that had to be dug out by hand. Everything you've walked through today started from that blank, broken slate.</p>
+      </section>
+
+      <div class="essay">
+        <div class="gallery" id="siteGallery"></div>
+
+        <h3>Two visions for the land</h3>
+        <p class="first">From the start, we imagined the plot in two halves. One half was intended to become a <em>Pacific Northwest meadow</em> — loose, native and seasonal, the soft grassland that belongs so naturally to this corner of the world.</p>
+        <p>Ultimately, though, our hearts were set on something else: a true Mediterranean garden, like the one at Kassiopia. That vision — sun-loving and drought-adapted, all silver foliage and aromatic scent — is the one that came to shape Sparrowhawk.</p>
+
+        <h3>The Pacific Northwest meadow</h3>
+        <p>These are the photos of the Pacific Northwest meadow on that half of the garden — a gentle counterpoint to the gravel and silver of the Mediterranean beds.</p>
+        <p>We created it in collaboration with <strong>Northwest Meadowscapes</strong>, whose native seed brought the meadow to life.</p>
+        <div class="gallery" id="meadowGallery"></div>
+
+        <h3>About Northwest Meadowscapes</h3>
+        <p>Northwest Meadowscapes is a family-owned, ecologist-staffed native-seed company rooted in the Pacific Northwest, supplying grasses and wildflowers for meadows, pollinator habitat and rain gardens across Oregon and Washington. They work only with true, 100% native species — not the cheap, mass-market “wildflower” blends — composed so that something is always coming into flower, in succession across the seasons and from one year to the next.</p>
+        <p>Their guiding idea, sometimes called <em>meadowscaping</em>, is to replace thirsty turf lawn with living habitat for bees, butterflies, birds and other wildlife. It carries real urgency: native Northwest meadows are among the most biologically diverse landscapes in the region, yet less than one percent of them remain. Having collaborated with pollinator-conservation groups such as the Xerces Society, they help bring a little of that vanishing ecosystem back, one garden at a time.</p>
+        <p class="works">Learn more at <a href="https://northwestmeadowscapes.com" target="_blank" rel="noopener">northwestmeadowscapes.com</a>.</p>
+      </div>
+    
+      </section>
+      <section id="story-climate" class="story-section">
+      <section class="ack-intro">
+        <p class="eyebrow">Climate</p>
+        <h2>A Mediterranean rhythm at 48° North</h2>
+        <p>Sparrowhawk sits on a south-facing slope on Whidbey Island, just outside Oak Harbor — and tucked inside the Olympic rain shadow. That quirk of geography is what makes a Mediterranean garden possible this far north.</p>
+      </section>
+
+      <div class="essay">
+        <h3>What makes a climate “Mediterranean”</h3>
+        <p class="first">A true Mediterranean climate is defined less by heat than by rhythm: <em>dry summers and mild, wet winters</em> — the opposite of most of the world, where the rain arrives in summer. It is a genuinely rare pattern, found in only five places on Earth: the Mediterranean Basin itself, coastal California, central Chile, the Cape of South Africa, and south-western Australia. Each grows its own version of tough, aromatic, evergreen shrubland — maquis and garrigue in Greece, matorral in Chile, fynbos in South Africa.</p>
+
+        <figure class="worldmap">
+<svg class="wm-svg" viewBox="0 0 972 378" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="World map of Mediterranean climate zones">
+<rect x="1" y="1" width="970" height="376" rx="8" fill="#F4F3EB" stroke="#D5D7C8"/>
+<rect x="1" y="94.5" width="970" height="40.5" fill="#B8932E" opacity="0.09"/>
+<rect x="1" y="297.0" width="970" height="40.5" fill="#B8932E" opacity="0.09"/>
+<polygon points="37.8,32.4 64.8,24.3 105.3,27.0 140.4,27.0 189.0,29.7 229.5,21.6 264.6,18.9 288.9,21.6 278.1,35.1 251.1,35.1 234.9,51.3 237.6,62.1 253.8,78.3 270.0,75.6 272.7,59.4 272.7,48.6 297.0,48.6 313.2,54.0 324.0,70.2 305.1,67.5 324.0,81.0 307.8,83.7 297.0,89.1 307.8,97.2 297.0,99.9 286.2,108.0 280.8,116.1 267.3,132.3 270.0,148.5 264.6,140.4 261.9,135.0 248.4,135.0 243.0,137.7 232.2,137.7 224.1,140.4 224.1,148.5 229.5,156.6 237.6,167.4 240.3,159.3 251.1,159.3 248.4,167.4 245.7,172.8 261.9,191.7 256.5,186.3 237.6,172.8 226.8,172.8 202.5,164.7 199.8,153.9 189.0,151.2 183.6,143.1 178.2,140.4 189.0,132.3 180.9,132.3 170.1,129.6 159.3,124.2 156.6,116.1 151.2,108.0 151.2,99.9 151.2,89.1 153.9,86.4 140.4,78.3 132.3,67.5 118.8,59.4 94.5,54.0 75.6,56.7 59.4,62.1 48.6,56.7 40.5,45.9 37.8,32.4" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="361.8,54.0 342.9,43.2 351.0,27.0 372.6,10.8 405.0,-5.4 432.0,-5.4 440.1,10.8 426.6,27.0 405.0,37.8 378.0,51.3 361.8,54.0" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="421.2,39.2 450.9,37.8 450.9,44.6 426.6,44.6 421.2,39.2" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="278.1,194.4 291.6,183.6 318.6,189.0 324.0,202.5 348.3,205.2 351.0,216.0 367.2,221.4 391.5,229.5 394.2,237.6 383.4,251.1 380.7,264.6 356.4,283.5 356.4,291.6 340.2,307.8 329.4,321.3 318.6,324.0 315.9,332.1 307.8,337.5 299.7,351.0 299.7,359.1 307.8,364.5 291.6,361.8 286.2,351.0 288.9,337.5 288.9,324.0 291.6,310.5 294.3,297.0 297.0,280.8 297.0,264.6 280.8,253.8 272.7,237.6 267.3,229.5 270.0,221.4 267.3,210.6 275.4,199.8 278.1,194.4" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="442.8,175.5 440.1,159.3 450.9,151.2 459.0,143.1 469.8,129.6 472.5,118.8 486.0,118.8 513.0,116.1 526.5,129.6 540.0,132.3 553.5,129.6 572.4,132.3 577.8,140.4 580.5,151.2 585.9,167.4 591.3,175.5 602.1,186.3 615.6,183.6 623.7,183.6 618.3,194.4 607.5,202.5 596.7,218.7 594.0,226.8 594.0,245.7 583.2,264.6 580.5,275.4 572.4,286.2 561.6,305.1 540.0,310.5 531.9,294.3 526.5,286.2 521.1,261.9 515.7,243.0 510.3,218.7 510.3,207.9 499.5,202.5 486.0,202.5 467.1,205.2 453.6,194.4 442.8,183.6 442.8,175.5" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="461.7,116.1 461.7,105.3 461.7,99.9 480.6,99.9 475.2,86.4 483.3,83.7 491.4,78.3 496.8,75.6 504.9,72.9 507.6,62.1 499.5,59.4 499.5,51.3 504.9,45.9 515.7,43.2 523.8,32.4 540.0,27.0 556.2,24.3 567.0,27.0 594.0,32.4 634.5,29.7 648.0,27.0 675.0,21.6 688.5,18.9 729.0,13.5 769.5,10.8 796.5,16.2 837.0,18.9 864.0,21.6 918.0,27.0 945.0,29.7 966.6,32.4 945.0,48.6 926.1,51.3 907.2,78.3 904.5,62.1 891.0,56.7 872.1,70.2 864.0,75.6 850.5,86.4 837.0,102.6 815.4,108.0 812.7,113.4 810.0,124.2 815.4,132.3 810.0,140.4 804.6,151.2 783.0,159.3 777.6,159.3 772.2,172.8 780.3,186.3 772.2,191.7 766.8,191.7 756.0,194.4 750.6,194.4 750.6,180.9 739.8,172.8 731.7,156.6 723.6,156.6 702.0,172.8 702.0,191.7 693.9,194.4 683.1,167.4 675.0,156.6 666.9,151.2 650.7,148.5 639.9,148.5 645.3,156.6 637.2,167.4 626.4,172.8 615.6,178.2 602.1,183.6 594.0,172.8 585.9,156.6 580.5,140.4 580.5,132.3 583.2,118.8 567.0,116.1 556.2,110.7 548.1,113.4 540.0,108.0 529.2,108.0 526.5,113.4 521.1,105.3 515.7,99.9 507.6,97.2 502.2,99.9 494.1,99.9 486.0,110.7 483.3,116.1 472.5,118.8 461.7,116.1" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="472.5,59.4 480.6,62.1 483.3,70.2 477.9,78.3 472.5,81.0 472.5,72.9 469.8,67.5 472.5,59.4" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="459.0,70.2 467.1,67.5 469.8,75.6 461.7,75.6 459.0,70.2" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="866.7,94.5 872.1,99.9 864.0,108.0 855.9,116.1 842.4,121.5 837.0,132.3 839.7,126.9 850.5,121.5 858.6,116.1 864.0,102.6 866.7,94.5" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="869.4,245.7 877.5,256.5 880.2,267.3 888.3,272.7 899.1,286.2 899.1,299.7 893.7,307.8 885.6,318.6 880.2,321.3 866.7,318.6 861.3,313.2 855.9,310.5 850.5,310.5 847.8,302.4 834.3,302.4 820.8,307.8 807.3,307.8 796.5,307.8 793.8,294.3 793.8,275.4 815.4,264.6 820.8,259.2 834.3,256.5 842.4,248.4 853.2,248.4 855.9,259.2 864.0,261.9 866.7,251.1 869.4,245.7" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="839.7,218.7 866.7,224.1 882.9,232.2 891.0,243.0 874.8,240.3 858.6,237.6 842.4,226.8 839.7,218.7" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="953.1,310.5 961.2,318.6 966.6,321.3 963.9,326.7 955.8,326.7 953.1,318.6 953.1,310.5" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="936.9,334.8 947.7,334.8 955.8,340.2 945.0,342.9 936.9,337.5 936.9,334.8" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="618.3,248.4 621.0,256.5 615.6,270.0 607.5,283.5 604.8,275.4 610.2,259.2 618.3,248.4" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<polygon points="745.2,205.2 766.8,221.4 788.4,237.6 804.6,237.6 810.0,229.5 793.8,224.1 772.2,218.7 753.3,207.9 745.2,205.2" fill="#CBD1BC" stroke="#9AA488" stroke-width="1"/>
+<ellipse cx="534.6" cy="116.1" rx="29.7" ry="13.5" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<text x="534.6" y="121.1" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="15" font-weight="700" fill="#fff">1</text>
+<ellipse cx="162.0" cy="118.8" rx="8.1" ry="16.2" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<text x="162.0" y="123.8" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="15" font-weight="700" fill="#fff">2</text>
+<ellipse cx="294.3" cy="307.8" rx="6.8" ry="16.2" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<text x="294.3" y="312.8" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="15" font-weight="700" fill="#fff">3</text>
+<ellipse cx="540.0" cy="305.1" rx="13.5" ry="7.0" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<text x="540.0" y="310.1" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="15" font-weight="700" fill="#fff">4</text>
+<ellipse cx="801.9" cy="302.4" rx="10.8" ry="10.8" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<text x="801.9" y="307.4" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="15" font-weight="700" fill="#fff">5</text>
+<ellipse cx="855.9" cy="310.5" rx="8.1" ry="5.9" fill="#B8932E" opacity="0.9" stroke="#8a6c14" stroke-width="1"/>
+<polygon points="155.0,76.6 157.2,82.5 163.6,82.8 158.6,86.8 160.3,92.9 155.0,89.4 149.7,92.9 151.4,86.8 146.4,82.8 152.8,82.5" fill="#2F3826" stroke="#B8932E" stroke-width="1.5"/>
+<text x="168.0" y="81.6" font-family="Hanken Grotesk,sans-serif" font-size="14" font-weight="600" fill="#2F3826">Sparrowhawk</text>
+</svg>
+          <figcaption>A true Mediterranean climate exists in only five regions on Earth — all on the western edges of continents, between roughly 30° and 45° of latitude (the shaded bands). Sparrowhawk (the star) sits just poleward of them, at 48° North.</figcaption>
+        </figure>
+        <ol class="zone-legend">
+          <li><span class="num">1</span> Mediterranean Basin — Southern Europe, North Africa &amp; the Levant</li>
+          <li><span class="num">2</span> California &amp; the US West Coast</li>
+          <li><span class="num">3</span> Central Chile</li>
+          <li><span class="num">4</span> The Cape, South Africa</li>
+          <li><span class="num">5</span> Southwestern &amp; Southern Australia</li>
+          <li><span class="star">&#9733;</span> Sparrowhawk — Whidbey Island, Washington</li>
+        </ol>
+
+        <h3>Sparrowhawk's microclimate</h3>
+        <p>West of the Cascades, the Pacific Northwest already follows that summer-dry, winter-wet rhythm. But the Olympic Mountains wring most of the rain from the air before it reaches us, leaving Whidbey Island in a rain shadow: Oak Harbor sees only about twenty inches of rain a year — roughly half of Seattle's — with markedly more sun. Add a south-facing slope, which gathers light and warmth and drains freely, and you have a pocket that behaves far more like the dry Mediterranean than the dripping rainforest most people picture when they think of Washington.</p>
+        <p>The real difference is temperature. At nearly 48° North, our summers are cool rather than scorching and our winters can bite, so Sparrowhawk leans on the hardier end of the Mediterranean palette — lavender, rosemary, cistus, santolina — rather than the most tender species. Think of it as a cool-summer cousin of Greece.</p>
+
+        <h3>How Sparrowhawk compares</h3>
+        <div class="table-wrap">
+          <table class="climate-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="me">Sparrowhawk<span>Whidbey Island</span></th>
+                <th>Greece<span>Mediterranean Basin</span></th>
+                <th>Central Chile<span>Matorral</span></th>
+                <th>South African Cape<span>Fynbos</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th>Latitude</th><td class="me">~48° N</td><td>~38° N</td><td>~33° S</td><td>~34° S</td></tr>
+              <tr><th>Climate type</th><td class="me">Csb · cool-summer, maritime</td><td>Csa · hot-summer</td><td>Csb / Csa</td><td>Csb</td></tr>
+              <tr><th>Summers</th><td class="me">Cool, dry, sunny<br>~20°C / 67°F</td><td>Hot, arid<br>~32°C / 90°F</td><td>Warm, bone-dry<br>~30°C / 86°F</td><td>Warm, dry, windy<br>~26°C / 79°F</td></tr>
+              <tr><th>Winters</th><td class="me">Mild, wet<br>~2°C / 35°F lows</td><td>Mild, wet<br>~10°C / 50°F</td><td>Mild, wet<br>~15°C / 59°F</td><td>Mild, wet<br>~17°C / 63°F</td></tr>
+              <tr><th>Annual rainfall</th><td class="me">~510 mm · 20 in</td><td>~400 mm · 16 in</td><td>~310 mm · 12 in</td><td>~515 mm · 20 in</td></tr>
+              <tr><th>Native shrubland</th><td class="me">Prairie &amp; Garry oak</td><td>Garrigue &amp; maquis</td><td>Matorral</td><td>Fynbos</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="palette-note">Our rainfall — around 510 mm — is almost identical to Cape Town's. We simply receive it cooler, and farther from the equator than any of the classic Mediterranean regions.</p>
+
+        <p>That is the quiet logic behind Sparrowhawk: not to fight a Washington climate, but to recognise the Mediterranean rhythm already hiding inside it, and to plant accordingly.</p>
+      </div>
+    
+      </section>
+      <section id="story-kassiopia" class="story-section">
+      <section class="ack-intro">
+        <p class="eyebrow">The Greatest Influence</p>
+        <h2>The Gardens at Kassiopia</h2>
+        <p>Of all the places that shaped Sparrowhawk, none looms larger than the gardens of the <strong>Kassiopia Estate</strong>, set on a rocky limestone headland on the mountainous north-east coast of the island of Corfu, just beyond the fishing village of Kassiopi. More than any single book or border, these gardens are the reason Sparrowhawk looks the way it does.</p>
+      </section>
+
+      <div class="gallery" id="kassiopiaGallery"></div>
+
+      <div class="essay">
+        <h3>The setting</h3>
+        <p class="first">Corfu is often called the Garden Isle — a lush, rugged landscape of centuries-old olives and dark, sentinel cypresses cloaking the hillsides. Unusually for Greece, it is among the kindest places in the country to make a garden, blessed with high rainfall, fertile soil, humidity and little wind. The Kassiopia gardens occupy a four-acre headland looking out across the Corfu Straits to the Albanian mountains, snow-capped in winter. House and garden were conceived together, so that the lines between building, planting and sea all but dissolve.</p>
+
+        <h3>A garden drawn from the wild</h3>
+        <p>What makes Kassiopia so instructive is that the garden was coaxed from the land already there rather than imposed upon it. The first work was not planting but clearing — easing brambles and smilax away from the dense maquis to free smothered Kermes oak, buckthorn and mock privet, and revealing a woodland of winding paths and glades running down to the water. Once light and space returned, so did long-dormant cyclamen, rescued wild pears, drifts of asphodel and a meadow flora studded with wild iris. The natural diversity of the site became the design's guide.</p>
+
+        <h3>Two climates on one headland</h3>
+        <p>The headland holds two microclimates. Its exposed north-east face catches cold winds off the Albanian mountains, so the plants there must shrug off the occasional freeze; a sheltered south-east corner stays warm enough for tender favourites such as bougainvillea, plumbago, agapanthus and citrus. Reading those differences and planting to them — rather than fighting them — is a lesson Sparrowhawk took straight to heart.</p>
+
+        <h3>The planting — where Sparrowhawk begins</h3>
+        <p>Nearer the houses, the planting becomes <em>phrygana</em>, the Greek cousin of the French garrigue: low, aromatic, cushion-shaped shrubs threaded by paths of local stone, with olives and pomegranates framing rather than blocking the view. The palette will look familiar to anyone who has walked Sparrowhawk — grey-green cistus and thyme, silver helichrysum and lavender, white-felted Convolvulus cneorum and deep green rosemary, lifted by pastel perennials and clouds of self-seeding Stipa grass that ripple like the sea in the lightest breeze and glow at either end of the day.</p>
+        <p class="palette-note">Cistus, thyme, helichrysum, lavender, rosemary — nearly every plant in our own beds can be traced back to this Corfiot hillside.</p>
+
+        <h3>Working with water</h3>
+        <p>For all the island's lushness, Kassiopia still gardens against drought. Rainwater is harvested for the summer, but watering is kept deliberately deep and infrequent, driving roots downward and teaching each plant to fend for itself. As the garden matures, self-seeding lets it renew itself with only a guiding hand. That principle — independence over indulgence — is the quiet rule behind every bed at Sparrowhawk.</p>
+
+        <p class="works">A fitting coincidence runs through all of this: the Kassiopia gardens were written up for the <em>Garden Design Journal</em> by Jennie Gay — the same Jennifer Gay you'll find in the Landscape Architects tab. The threads of this garden all seem to lead back to Corfu. &nbsp;<a href="https://www.kassiopiaestate.com/gardens.html" target="_blank" rel="noopener">Read about the gardens →</a></p>
+      </div>
+    
+      </section>
+      <section id="story-people" class="story-section">
+      <section class="ack-intro">
+        <p class="eyebrow">Acknowledgements</p>
+        <h2>The inspiration behind Sparrowhawk</h2>
+        <p>This garden owes its spirit to two people who have spent their lives showing what a Mediterranean garden can be when it works <em>with</em> the dry summer rather than against it. Their plants, their writing, and their own gardens shaped every bed you've walked through today.</p>
+      </section>
+
+      <article class="architect">
+        <figure class="portrait">
+          <div class="frame">
+            <img src="olivier-filippi.jpg" data-base="olivier-filippi" data-i="0" alt="Olivier Filippi" loading="lazy" onerror="tryImg(this)">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.8-2h6.4L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+              <span class="fn">olivier-filippi.jpg</span>
+            </div>
+          </div>
+          <figcaption>Olivier Filippi</figcaption>
+        </figure>
+        <p class="role">Nurseryman &amp; Dry-Gardening Pioneer · South of France</p>
+        <h3>Olivier Filippi</h3>
+        <div class="lead-rule"></div>
+
+        <p class="sub">Who he is</p>
+        <p>With his wife Clara, Olivier Filippi runs Pépinière Filippi, a nursery on a windswept site overlooking the lagoons of the Étang du Thau near Mèze, in the south of France. Begun in the 1980s, it has grown into a reference point for Mediterranean horticulture, holding around fifteen hundred species and varieties. Together the couple have travelled the Mediterranean-climate regions of the world — from Crete and Greece to Spain, Portugal and the Atlas Mountains — studying how wild plants endure long, rainless summers. He is widely regarded as the leading voice in drought-tolerant planting.</p>
+
+        <p class="sub">On drought-resistant gardening</p>
+        <p>Filippi's central idea is deceptively simple: a garden in a dry climate should be built from plants that truly belong there, and it should ask for little or no irrigation at all. He looks to the garrigue and maquis — the wild Mediterranean scrub — as his model, favouring tough, aromatic, lean-soil plants that actively resent pampering and extra water. He argues that the lawn, made possible only by modern irrigation, has no real place in such a garden, and instead champions gravel gardens and undulating mounded beds composed for foliage, texture and form as much as for flower.</p>
+
+        <blockquote>“In the future, water won't be available to us.”<cite>Olivier Filippi, Gardens Illustrated</cite></blockquote>
+
+        <p class="works">Books: <em>The Dry Gardening Handbook</em> · <em>Planting Design for Dry Gardens</em> · <em>Bringing the Mediterranean Into Your Garden</em>. &nbsp;Nursery: <a href="https://jardin-sec.com" target="_blank" rel="noopener">jardin-sec.com</a></p>
+      </article>
+
+      <article class="architect lav">
+        <figure class="portrait">
+          <div class="frame">
+            <img src="jennifer-gay.jpg" data-base="jennifer-gay" data-i="0" alt="Jennifer Gay" loading="lazy" onerror="tryImg(this)">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.8-2h6.4L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+              <span class="fn">jennifer-gay.jpg</span>
+            </div>
+          </div>
+          <figcaption>Jennifer Gay</figcaption>
+        </figure>
+        <p class="role">Landscape Architect, Gardener &amp; Writer · Greece</p>
+        <h3>Jennifer Gay</h3>
+        <div class="lead-rule"></div>
+
+        <p class="sub">Who she is</p>
+        <p>Jennifer Gay is a British-trained landscape architect who has lived and gardened in Greece since 1999. She studied horticulture at the Royal Horticultural Society's garden at Rosemoor and earned an MA in landscape architecture from the University of Sheffield, then gardened in southern England and in Jerusalem before moving to Greece to work at the Mediterranean Garden Society's garden at Sparoza, near Athens. She went on to help develop a botanical garden on the island of Kefalonia, and has been designing gardens across Greece — especially the Ionian and Aegean islands — ever since. She is also a long-standing gardening columnist and the author of <em>Greece: Garden of the Gods</em>.</p>
+
+        <p class="sub">On drought-resistant gardening</p>
+        <p>Gay's approach begins with reading a place closely — its soil, its exposure, its wind and water — and then choosing indigenous Greek and Mediterranean species suited to exactly those conditions, rather than forcing in plants destined to struggle. Her gardening is unflinchingly environmental: no artificial fertilisers or pesticides, with composting, mulching and natural balance doing the work instead. The result is a garden that shrugs off drought, wind, fire and erosion because it was built to belong, not to be propped up.</p>
+
+        <blockquote>“It's better not to fight your conditions.”<cite>Jennifer Gay, Mediterranean Garden Society</cite></blockquote>
+
+        <p class="works">Author of <em>Greece: Garden of the Gods</em>. &nbsp;Associated with the <a href="https://www.mediterraneangardensociety.org" target="_blank" rel="noopener">Mediterranean Garden Society</a>.</p>
+      </article>
+    
+      </section>
+    </div><!-- /view-story -->
+    
+
+    <footer>
+      <p class="fr">Thank you for walking Sparrowhawk.</p>
+      <p style="margin-top:8px">Every plant here earns its place by thriving on sun and neglect — the heart of a Mediterranean garden.</p>
+    </footer>
+  </div>
+
+<script>
+/* ================================================================
+   YOUR PLANTS
+   ----------------------------------------------------------------
+   Each plant is one block. To ADD a plant, copy a block and change
+   the values. To EDIT wording, just change the text in quotes.
+
+     common : the everyday name (shown small, in caps)
+     latin  : the botanical name (shown large, in italics)
+     image  : the photo filename — put a photo with this exact name
+              in the SAME folder as this file (e.g. spanish-lavender.jpg)
+     blurb  : the description visitors read
+     tags   : short condition labels (sun / water / bloom)
+     swatch : the little colour tab — the plant's flower colour
+   ================================================================ */
+const PLANTS = [
+  {
+    common: "Spanish Lavender",
+    latin:  "Lavandula stoechas",
+    image:  "spanish-lavender.jpg",
+    blurb:  "Topped with showy “rabbit-ear” bracts, this is the first lavender to bloom — a haze of deep purple from mid-spring. It loves heat, shrugs off drought, and hums with bees.",
+    tags:   ["Full sun", "Low water", "Spring–summer"],
+    swatch: "#5E5288"
+  },
+  {
+    common: "English Lavender",
+    latin:  "Lavandula angustifolia",
+    image:  "english-lavender.jpg",
+    blurb:  "The classic, sweetest-scented lavender and the most cold-hardy of the lot. Compact mounds of silver-grey foliage give way to fragrant wands prized for sachets, cooking, and pure nostalgia.",
+    tags:   ["Full sun", "Low water", "Early–mid summer"],
+    swatch: "#8479A8"
+  },
+  {
+    common: "Hybrid Lavender (Lavandin)",
+    latin:  "Lavandula × intermedia",
+    image:  "hybrid-lavender.jpg",
+    blurb:  "A vigorous cross of English and spike lavender, grown across Provence for its oil. Tall, long-stemmed and intensely aromatic, it blooms later and longer than either parent.",
+    tags:   ["Full sun", "Low water", "Mid–late summer"],
+    swatch: "#6E6AA8"
+  },
+  {
+    common: "Santolina · Cotton Lavender",
+    latin:  "Santolina chamaecyparissus",
+    image:  "santolina.jpg",
+    blurb:  "Not a true lavender at all — but its silvery, finely-cut foliage holds a tidy mound year-round, studded in summer with button-bright yellow flowers. Made for edging a sunny path.",
+    tags:   ["Full sun", "Very low water", "Summer"],
+    swatch: "#C2A23A"
+  },
+  {
+    common: "Helichrysum · Curry Plant",
+    latin:  "Helichrysum italicum",
+    image:  "helichrysum.jpg",
+    blurb:  "Brush past it on a warm afternoon and you'll catch the unmistakable scent of curry. Needle-fine silver foliage and clusters of small gold flowers thrive on neglect and bright heat.",
+    tags:   ["Full sun", "Very low water", "Summer"],
+    swatch: "#C9B45E"
+  },
+  {
+    common: "Cistus · Rock Rose",
+    latin:  "Cistus",
+    image:  "cistus.jpg",
+    blurb:  "Each papery, crêpe-like bloom lasts a single day — then the shrub simply unfurls dozens more. Resinous, aromatic, and utterly unbothered by drought, heat, or poor stony soil.",
+    tags:   ["Full sun", "Very low water", "Late spring–early summer"],
+    swatch: "#C77E89"
+  },
+  {
+    common: "Jerusalem Sage",
+    latin:  "Phlomis fruticosa",
+    image:  "jerusalem-sage.jpg",
+    blurb:  "Whorls of hooded, butter-yellow flowers stack up the stems above soft, grey-green felted leaves. The architectural seed heads earn their keep long after the blooms fade.",
+    tags:   ["Full sun", "Low water", "Early summer"],
+    swatch: "#D2A93C"
+  },
+  {
+    common: "Catmint",
+    latin:  "Nepeta × faassenii",
+    image:  "catmint.jpg",
+    blurb:  "A soft cloud of grey-green foliage topped for months by sprays of lavender-blue flowers. Shear it after the first flush and it blooms all over again — irresistible to bees, and the occasional cat.",
+    tags:   ["Full sun", "Low water", "Late spring–autumn"],
+    swatch: "#7E86B0"
+  },
+  {
+    common: "Salvia",
+    latin:  "Salvia",
+    image:  "salvia.jpg",
+    blurb:  "Upright spires of jewel-toned flowers rise above aromatic foliage from early summer, drawing bees and hummingbirds. Tough, long-flowering, and right at home in a hot, dry border.",
+    tags:   ["Full sun", "Low water", "Summer–autumn"],
+    swatch: "#6E5B97"
+  },
+  {
+    common: "Rosemary",
+    latin:  "Salvia rosmarinus",
+    image:  "rosemary.jpg",
+    blurb:  "An evergreen backbone of the Mediterranean garden: resinous, needle-fine foliage you can cook with, dotted in spring with tiny pale-blue flowers. Thrives on heat and poor soil.",
+    tags:   ["Full sun", "Very low water", "Spring bloom"],
+    swatch: "#8FA9C2"
+  },
+  {
+    common: "Sage",
+    latin:  "Salvia officinalis",
+    image:  "sage.jpg",
+    blurb:  "The kitchen sage, grown as much for its soft, pebbled grey-green leaves as for the spikes of purple-blue flowers that follow in early summer. Aromatic, evergreen, and endlessly useful.",
+    tags:   ["Full sun", "Low water", "Early summer"],
+    swatch: "#8A86A6"
+  },
+  {
+    common: "Thyme",
+    latin:  "Thymus vulgaris",
+    image:  "thyme.jpg",
+    blurb:  "A low, creeping mat of tiny aromatic leaves that releases its scent underfoot and froths with pink-purple flowers in summer. Perfect tucked between paving stones in full sun.",
+    tags:   ["Full sun", "Very low water", "Summer"],
+    swatch: "#B07AA0"
+  },
+  {
+    common: "Euphorbia",
+    latin:  "Euphorbia",
+    image:  "euphorbia.jpg",
+    blurb:  "All architecture and acid-green drama — domed heads of chartreuse bracts top blue-green stems from spring. Sculptural and drought-proof; just mind the milky sap, which can irritate skin.",
+    tags:   ["Full sun", "Very low water", "Spring–early summer"],
+    swatch: "#B6C24E"
+  }
+];
+
+/* ---- render the cards (no need to edit below this line) ---- */
+
+/* Make photos forgiving about file extension: try .jpg, then .jpeg,
+   .JPG, .png, etc. before showing the placeholder — so a file saved as
+   cistus.jpeg or Cistus.JPG will still appear without renaming. */
+const IMG_EXTS = ['jpg','jpeg','JPG','JPEG','png','PNG','webp'];
+function tryImg(img){
+  const i = (parseInt(img.dataset.i || '0', 10)) + 1;
+  if (i < IMG_EXTS.length){
+    img.dataset.i = i;
+    img.src = img.dataset.base + '.' + IMG_EXTS[i];
+  } else {
+    img.style.display = 'none';
+    if (img.nextElementSibling) img.nextElementSibling.style.display = 'flex';
+  }
+}
+
+/* hero image: try extensions, then quietly fall back to the gradient */
+function heroImg(img){
+  const i = (parseInt(img.dataset.i || '0', 10)) + 1;
+  if (i < IMG_EXTS.length){ img.dataset.i = i; img.src = img.dataset.base + '.' + IMG_EXTS[i]; }
+  else { img.style.display = 'none'; }
+}
+
+const grid = document.getElementById('grid');
+document.getElementById('plantCount').textContent = PLANTS.length;
+
+PLANTS.forEach(p => {
+  const initial = p.common.replace(/[^A-Za-z]/,'').charAt(0).toUpperCase();
+  const tagsHtml = p.tags.map((t,i) =>
+    `<span class="tag${i===2?' gold':''}">${t}</span>`).join('');
+
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.tabIndex = 0;
+  card.innerHTML = `
+    <div class="photo">
+      <span class="swatch" style="background:${p.swatch}"></span>
+      <img src="${p.image.replace(/\.[^.]+$/,'')}.jpg" alt="${p.common}" loading="lazy"
+           data-base="${p.image.replace(/\.[^.]+$/,'')}" data-i="0" onerror="tryImg(this)">
+      <div class="placeholder" style="display:none">
+        <span class="mono">${initial}</span>
+        <span class="hint">Photo: ${p.image}</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="common">${p.common}</div>
+      <div class="latin">${p.latin}</div>
+      <p class="blurb">${p.blurb}</p>
+      <div class="tags">${tagsHtml}</div>
+    </div>`;
+  grid.appendChild(card);
+});
+
+/* ---- gentle scroll reveal ---- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold:0.12 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+
+/* ================================================================
+   CONSTRUCTION PHOTOS
+   ----------------------------------------------------------------
+   Same idea as the plants: each line is one photo. Save a photo with
+   the matching filename in the SAME folder as this file and it appears.
+   Delete any line you don't have a photo for; add lines to show more.
+   ================================================================ */
+const SITE_2021 = [
+  { image:"construction-2021-1.jpg", caption:"Bare ground and construction debris, 2021." },
+  { image:"construction-2021-2.jpg", caption:"Cleared earth — still riddled with blackberry roots." }
+];
+const MEADOW_PHOTOS = [
+  { image:"meadow-1.jpg", caption:"The Pacific Northwest meadow." },
+  { image:"meadow-2.jpg", caption:"Native grasses and seasonal wildflowers." },
+  { image:"meadow-3.jpg", caption:"The meadow in summer." }
+];
+const KASSIOPIA_PHOTOS = [
+  { image:"kassiopia-1.jpg", caption:"The gardens at Kassiopia, Corfu." },
+  { image:"kassiopia-2.jpg", caption:"Terraces and Mediterranean planting." },
+  { image:"kassiopia-3.jpg", caption:"Views across the Corfu Straits." }
+];
+
+function renderGallery(containerId, photos){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  photos.forEach(p => {
+    const fig = document.createElement('figure');
+    fig.className = 'shot';
+    fig.innerHTML = `
+      <div class="frame">
+        <img src="${p.image.replace(/\.[^.]+$/,'')}.jpg" alt="${p.caption || ''}" loading="lazy"
+             data-base="${p.image.replace(/\.[^.]+$/,'')}" data-i="0" onerror="tryImg(this)">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.8-2h6.4L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+          <span class="fn">${p.image}</span>
+        </div>
+      </div>
+      ${p.caption ? `<figcaption>${p.caption}</figcaption>` : ''}`;
+    c.appendChild(fig);
+  });
+}
+renderGallery('siteGallery', SITE_2021);
+renderGallery('meadowGallery', MEADOW_PHOTOS);
+renderGallery('kassiopiaGallery', KASSIOPIA_PHOTOS);
+
+/* ---- tab switching between The Garden / Landscape Architects ---- */
+const views = {
+  garden: document.getElementById('view-garden'),
+  story:  document.getElementById('view-story')
+};
+const tabButtons = document.querySelectorAll('.tab-btn');
+function showView(name){
+  Object.keys(views).forEach(k => { views[k].hidden = (k !== name); });
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  window.scrollTo({ top:0, behavior:'auto' });
+}
+tabButtons.forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+document.getElementById('brandLink').addEventListener('click', (e) => { e.preventDefault(); showView('garden'); });
+
+/* ---- sub-pages within The Story ---- */
+const storyTabs = document.querySelectorAll('.story-tab');
+const storySections = document.querySelectorAll('.story-section');
+function showStorySection(name){
+  storySections.forEach(s => s.classList.toggle('active', s.id === 'story-' + name));
+  storyTabs.forEach(b => b.classList.toggle('active', b.dataset.section === name));
+  window.scrollTo({ top:0, behavior:'auto' });
+}
+storyTabs.forEach(b => b.addEventListener('click', () => showStorySection(b.dataset.section)));
+</script>
+</body>
+</html>
